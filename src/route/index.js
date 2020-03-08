@@ -1,34 +1,44 @@
-import React, { useState } from 'react'
+import React, { Component } from 'react'
 
 import MainPage from './MainPage'
 import CreateRoom from './CreateRoom'
 
-function App() {
-	const [mode, setMode] = useState(0)
-	const [roomId, setRoomId] = useState(null)
+class App extends Component {
+	constructor() {
+		super()
 
-	let component
-
-	switch (mode) {
-		case 1:
-			component = <CreateRoom roomId={roomId} />
-			break
-		case 2:
-			break
-		default:
-			component = (
-				<MainPage
-					onCreated={roomId => {
-						console.log('onCreated: ' + roomId)
-						setRoomId(roomId)
-						setMode(1)
-					}}
-				/>
-			)
-			break
+		this.state = {
+			mode: 0,
+			roomId: ''
+		}
 	}
 
-	return <div>{component}</div>
+	render() {
+		let component
+
+		switch (this.state.mode) {
+			case 1:
+				component = <CreateRoom roomId={this.state.roomId} />
+				break
+			case 2:
+				break
+			default:
+				component = (
+					<MainPage
+						onCreated={roomId => {
+							console.log('onCreated: ' + roomId)
+							this.setState({
+								mode: 1,
+								roomId
+							})
+						}}
+					/>
+				)
+				break
+		}
+
+		return <div>{component}</div>
+	}
 }
 
 export default App

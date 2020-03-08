@@ -7,8 +7,6 @@
     "default_popup": "index.html",
     "default_title": "Youtogether"
   },
-  "permissions": [
-    "activeTab"
-  ],
+  "permissions": [],
   "content_security_policy": "script-src 'self' 'sha256-NdF6luvUZMQNvBpR4l3b7feFlAa949czaMnrgfbSXW4='; object-src 'self'"
 }
