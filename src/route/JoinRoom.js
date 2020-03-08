@@ -1,25 +1,21 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import './CreateRoom.scss'
 import { firestore } from '../firebase'
 
-class App extends Component {
-	constructor({ match, location }) {
-		super()
-
+function component(prop) {
+	useEffect(() => {
 		this.fs = firestore()
 
 		this.fs
 			.collection('Room')
-			.doc(match.params.roomId)
+			.doc(prop.roomId)
 			.onSnapshot(doc => {
 				let data = (window.$data = doc.data())
 				console.log('Room Data Changed: ', data)
 			})
-	}
+	})
 
-	render() {
-		return <div className="Calculator-Ratio"></div>
-	}
+	return <div className="JoinRoom"></div>
 }
 
-export default App
+export default component
