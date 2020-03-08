@@ -15,37 +15,38 @@ function App(prop) {
 	})
 
 	useEffect(() => {
+		let video
+		let playListener = () => {
+			console.log({
+				playing: true,
+				playTime: {
+					currentTime: video.currentTime,
+					startAt: new Date().getTime()
+				}
+			})
+		}
+
+		let pauseListener = () => {
+			console.log({
+				playing: false
+			})
+		}
+
 		// eslint-disable-next-line no-undef
-		chrome.tabs.executeScript({
-			code: `let playListener = () => {
-					console.log({
-						playing: true,
-						playTime: {
-							currentTime: video.currentTime,
-							startAt: new Date().getTime()
-						}
-					})
-				};
-		
-				let pauseListener = () => {
-					console.log({
-						playing: false
-					})
-				};
-				let video = document.querySelector('.html5-main-video');
-				video.addEventListener('play', playListener);
+		chrome.tabs.executeScript(
+			{
+				code: `document.querySelector('.html5-main-video')`
+			},
+			result => {
+				video = result
+				video.addEventListener('play', playListener)
 				video.addEventListener('pause', pauseListener)
-				`
-		})
+			}
+		)
 
 		return () => {
-			// eslint-disable-next-line no-undef
-			chrome.tabs.executeScript({
-				code: `
-					video.removeEventListener('play', playListener);
-					video.removeEventListener('pause', pauseListener)
-					`
-			})
+			video.addEventListener('play', playListener)
+			video.addEventListener('pause', pauseListener)
 		}
 	})
 
