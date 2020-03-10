@@ -14,7 +14,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
 		})
 	}
 	document.getElementById('joinRoom').onclick = () => {
-		let roomId = document.getElementById('roomId').value
+		let roomId = document.getElementById('roomIdInput').value
 		ytApi.join(tab, roomId, () => {
 			updateUI()
 		})
@@ -27,6 +27,8 @@ function updateUI() {
 		document.getElementById('start').classList.add('hidden')
 		document.getElementById('room').classList.remove('hidden')
 		console.log('state', state)
+		document.getElementById('roomId').innerText = state.roomId
+		document.getElementById('host').innerText = state.host
 	} else {
 		document.getElementById('start').classList.remove('hidden')
 		document.getElementById('room').classList.add('hidden')

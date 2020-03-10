@@ -9,7 +9,7 @@ let ytApi = {
 				tab,
 				roomId,
 				() => {
-					callback()
+					callback(roomId)
 				},
 				true
 			)
@@ -22,13 +22,14 @@ let ytApi = {
 			mode: 0,
 			roomId: roomId
 		}
-		db.collection('cities')
-			.doc('SF')
-			.onSnapshot(function(doc) {
-				console.log('Current data: ', doc.data())
-			})
 
-		ytApi.urlChange(tab, tab.url, () => {})
+		fbApi.onSnapshot(ytState[tab.id], data => {
+			if (!host) ytApi.changeVideo(tab, data)
+		})
+
+		ytApi.urlChanged(tab, tab.url, () => {})
+
+		callback()
 	},
 	get(tab) {
 		console.log(tab.id, 'get')
@@ -62,8 +63,8 @@ let ytApi = {
 			}
 		)
 	},
-	urlChange(tab, url, callback) {
-		console.log(tab.id, 'urlChange', url)
+	urlChanged(tab, url, callback) {
+		console.log(tab.id, 'urlChanged', url)
 		fbApi.update(ytState[tab.id], {
 			url
 		})
@@ -71,9 +72,17 @@ let ytApi = {
 			callback()
 		})
 	},
-	videoChange(tab, changed) {
-		console.log(tab.id, 'videoChange', changed)
+	videoChanged(tab, changed) {
+		console.log(tab.id, 'videoChanged', changed)
 		if (ytState[tab.id]) fbApi.update(ytState[tab.id], changed)
+	},
+	changeVideo(tab, data) {
+		console.log(tab.id, 'changeVideo', data)
+		chrome.tabs.executeScript(tab.id, {
+			code: `window.postMessage(${JSON.stringify({ changeVideo: data })}, '*')`
+		})
+		//window.postMessage({ changeVideo: data }, '*')
+		//chrome.tabs.sendMessage(tab.id, { changeVideo: data })
 	}
 }
 
@@ -103,18 +112,25 @@ let fbApi = {
 			db.collection('Room')
 				.doc(state.roomId)
 				.update(data)
+	},
+	onSnapshot(state, callback) {
+		db.collection('Room')
+			.doc(state.roomId)
+			.onSnapshot(doc => {
+				callback(doc.data())
+			})
 	}
 }
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 	if (ytState[tabId]) {
-		if (changeInfo.url) ytApi.urlChange(tab, changeInfo.url)
+		if (changeInfo.url) ytApi.urlChanged(tab, changeInfo.url, () => {})
 
-		if (changeInfo.status == 'complete') ytApi.loadScript(tab)
+		if (changeInfo.status == 'complete') ytApi.loadScript(tab, () => {})
 	}
 })
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-	if (request.videoChange) ytApi.videoChange(sender.tab, request.videoChange)
+	if (request.videoChanged) ytApi.videoChanged(sender.tab, request.videoChanged)
 })
 
 window.ytApi = ytApi

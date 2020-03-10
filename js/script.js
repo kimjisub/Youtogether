@@ -1,8 +1,11 @@
 /* global extensionId */
-let sendPlay = () => {
+
+console.log('script loaded')
+
+function sendPlay() {
 	console.log('sendPlay')
 	chrome.runtime.sendMessage(extensionId, {
-		videoChange: {
+		videoChanged: {
 			playing: true,
 			playTime: {
 				currentTime: videoView.currentTime,
@@ -12,11 +15,15 @@ let sendPlay = () => {
 	})
 }
 
-let sendPause = () => {
+function sendPause() {
 	console.log('sendPause')
 	chrome.runtime.sendMessage(extensionId, {
-		videoChange: {
-			playing: false
+		videoChanged: {
+			playing: false,
+			playTime: {
+				currentTime: videoView.currentTime,
+				startAt: new Date().getTime()
+			}
 		}
 	})
 }
@@ -28,9 +35,22 @@ if (document.location.href.includes('youtube')) {
 		videoView.addEventListener('play', sendPlay)
 		videoView.addEventListener('pause', sendPause)
 	}
-	// chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-	// 	console.log(request, sender)
-	// })
+
+	window.addEventListener('message', event => {
+		if (event.data.changeVideo) {
+			let changeVideo = event.data.changeVideo
+			console.log(changeVideo)
+			if (changeVideo) {
+				if (changeVideo.url != document.location.href) document.location.href = changeVideo.url
+				if (changeVideo.playing) videoView.play()
+				else videoView.pause()
+
+				let delayTime = (new Date().getTime() - changeVideo.playTime.startAt) / 1000
+				videoView.currentTime = delayTime + changeVideo.playTime.currentTime
+			}
+		}
+	})
+
 	if (videoView.paused) sendPause()
 	else sendPlay()
 }
