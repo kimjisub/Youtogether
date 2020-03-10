@@ -1,56 +1,27 @@
+/*global chrome*/
 import React, { useState, useEffect } from 'react'
 import './CreateRoom.scss'
 import { firestore } from '../firebase'
 
 function App(prop) {
 	const fs = firestore()
-	const [time, setTime] = useState(0)
-	useEffect(() => {
-		fs.collection('Room')
-			.doc(prop.roomId)
-			.onSnapshot(doc => {
-				let data = (window.$data = doc.data())
-				console.log('Room Data Changed: ', data)
-			})
-	})
+	// const [playTime, setPlayTime] = useState({ currentTime: 0, startAt: 0 })
+	// const [playing, setPlaying] = useState(false)
 
-	useEffect(() => {
-		let video
-		let playListener = () => {
-			console.log({
-				playing: true,
-				playTime: {
-					currentTime: video.currentTime,
-					startAt: new Date().getTime()
-				}
-			})
-		}
+	// useEffect(() => {
+	// 	fs.collection('Room')
+	// 		.doc(prop.roomId)
+	// 		.onSnapshot(doc => {
+	// 			let data = (window.$data = doc.data())
+	// 			console.log('Room Data Changed: ', data)
+	// 		})
+	// })
 
-		let pauseListener = () => {
-			console.log({
-				playing: false
-			})
-		}
-
-		// eslint-disable-next-line no-undef
-		chrome.tabs.executeScript(
-			{
-				code: `document.querySelector('.html5-main-video')`
-			},
-			result => {
-				video = result
-				video.addEventListener('play', playListener)
-				video.addEventListener('pause', pauseListener)
-			}
-		)
-
-		return () => {
-			video.addEventListener('play', playListener)
-			video.addEventListener('pause', pauseListener)
-		}
-	})
-
-	return <div className="CreateRoom"></div>
+	return <div className="CreateRoom">{/* {playTime.currentTime}
+			<br />
+			{playTime.startAt}
+			<br />
+			{playing} */}</div>
 }
 
 export default App

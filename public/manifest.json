@@ -8,7 +8,11 @@
     "default_title": "Youtogether"
   },
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "tabs"
   ],
-  "content_security_policy": "script-src 'self' 'sha256-NdF6luvUZMQNvBpR4l3b7feFlAa949czaMnrgfbSXW4='; object-src 'self'"
+  "background": {
+    "page": "app/background.html"
+  },
+  "content_security_policy": "script-src 'self' 'unsafe-eval' https://www.gstatic.com 'sha256-NdF6luvUZMQNvBpR4l3b7feFlAa949czaMnrgfbSXW4='; object-src 'self'"
 }
