@@ -1,44 +1,45 @@
 /* global extensionId */
 
+let timeOffset = 0
 function init() {
-	chrome.runtime.sendMessage(extensionId, {
-		scriptLoaded: true
+	srvTime((serverTime, timeOffset_) => {
+		timeOffset = timeOffset_
+		chrome.runtime.sendMessage(extensionId, {
+			scriptLoaded: true
+		})
 	})
 }
 
 function sendPlay() {
 	console.log('sendPlay')
-	srvTime(time => {
-		chrome.runtime.sendMessage(extensionId, {
-			videoChanged: {
-				playing: true,
-				currentTime: videoView.currentTime,
-				startAt: time.getTime()
-			}
-		})
+	chrome.runtime.sendMessage(extensionId, {
+		videoChanged: {
+			playing: true,
+			currentTime: videoView.currentTime,
+			startAt: new Date().getTime() + timeOffset
+		}
 	})
 }
 
 function sendPause() {
 	console.log('sendPause')
-	srvTime(time => {
-		chrome.runtime.sendMessage(extensionId, {
-			videoChanged: {
-				playing: false,
-				currentTime: videoView.currentTime,
-				startAt: 0
-			}
-		})
+	chrome.runtime.sendMessage(extensionId, {
+		videoChanged: {
+			playing: false,
+			currentTime: videoView.currentTime,
+			startAt: 0
+		}
 	})
 }
 
 var xmlHttp
 function srvTime(callback) {
-	callback(new Date())
-	return
 	xmlHttp = new XMLHttpRequest()
 	xmlHttp.onload = () => {
-		callback(new Date(xmlHttp.getResponseHeader('Date')))
+		let serverTime = new Date(xmlHttp.getResponseHeader('Date')).getTime()
+		let localTime = new Date().getTime()
+		let timeOffset = serverTime - localTime
+		callback(serverTime, timeOffset)
 	}
 	xmlHttp.open('HEAD', window.location.href.toString(), true)
 	xmlHttp.setRequestHeader('Content-Type', 'text/html')
@@ -64,10 +65,9 @@ window.addEventListener('message', event => {
 		if (changeVideo) {
 			if (videoView) {
 				if (changeVideo.playing) {
-					srvTime(time => {
-						let delayTime = (time.getTime() - changeVideo.startAt) / 1000
-						videoView.currentTime = delayTime + changeVideo.currentTime
-					})
+					let delayTime = (new Date().getTime() + timeOffset - changeVideo.startAt) / 1000
+					videoView.currentTime = delayTime + changeVideo.currentTime
+
 					videoView.play()
 				} else {
 					videoView.currentTime = changeVideo.currentTime
