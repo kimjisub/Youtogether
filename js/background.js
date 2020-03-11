@@ -63,6 +63,12 @@ let ytApi = {
 			}
 		)
 	},
+	scriptLoaded(tab) {
+		console.log(tab.id, 'scriptLoaded')
+		fbApi.get(ytState[tab.id], data => {
+			if (!ytState[tab.id].host) ytApi.changeVideo(tab, data)
+		})
+	},
 	urlChanged(tab, url, callback) {
 		console.log(tab.id, 'urlChanged', url)
 		fbApi.update(ytState[tab.id], {
@@ -113,6 +119,14 @@ let fbApi = {
 				.doc(state.roomId)
 				.update(data)
 	},
+	get(state, callback) {
+		db.collection('Room')
+			.doc(state.roomId)
+			.get()
+			.then(doc => {
+				callback(doc.data())
+			})
+	},
 	onSnapshot(state, callback) {
 		db.collection('Room')
 			.doc(state.roomId)
@@ -131,6 +145,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 })
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 	if (request.videoChanged) ytApi.videoChanged(sender.tab, request.videoChanged)
+	if (request.scriptLoaded) ytApi.scriptLoaded(sender.tab)
 })
 
 window.ytApi = ytApi
