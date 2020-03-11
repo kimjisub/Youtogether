@@ -48,7 +48,7 @@ let ytApi = {
 		chrome.tabs.executeScript(
 			tab.id,
 			{
-				code: `let extensionId = '${chrome.runtime.id}'`
+				code: `console.log('Script Loaded');let extensionId = '${chrome.runtime.id}'`
 			},
 			() => {
 				chrome.tabs.executeScript(

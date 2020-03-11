@@ -1,7 +1,5 @@
 /* global extensionId */
 
-console.log('script loaded')
-
 function init() {
 	chrome.runtime.sendMessage(extensionId, {
 		scriptLoaded: true
