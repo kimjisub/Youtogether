@@ -23,8 +23,10 @@ let ytApi = {
 			roomId: roomId
 		}
 
-		fbApi.onSnapshot(ytState[tab.id], data => {
-			if (!host) ytApi.changeVideo(tab, data)
+		fbApi.onSnapshot(ytState[tab.id], (curr, prev) => {
+			if (!host) {
+				ytApi.changeWithData(tab, curr, prev)
+			}
 		})
 
 		ytApi.urlChanged(tab, tab.url, () => {})
@@ -66,7 +68,7 @@ let ytApi = {
 	scriptLoaded(tab) {
 		console.log(tab.id, 'scriptLoaded')
 		fbApi.get(ytState[tab.id], data => {
-			if (!ytState[tab.id].host) ytApi.changeVideo(tab, data)
+			if (!ytState[tab.id].host) ytApi.changeWithData(tab, data, null)
 		})
 	},
 	urlChanged(tab, url, callback) {
@@ -80,7 +82,15 @@ let ytApi = {
 	},
 	videoChanged(tab, changed) {
 		console.log(tab.id, 'videoChanged', changed)
-		if (ytState[tab.id]) fbApi.update(ytState[tab.id], changed)
+		if (ytState[tab.id]) fbApi.update(ytState[tab.id], { video: changed })
+	},
+	changeWithData(tab, curr, prev) {
+		console.log(tab.id, 'changeWithData', curr, prev)
+		if (prev == null || curr.url != prev.url) ytApi.changeUrl(tab, curr.url)
+		if (prev == null || JSON.stringify(curr.video) != JSON.stringify(prev.video)) ytApi.changeVideo(tab, curr.video)
+	},
+	changeUrl(tab, url) {
+		chrome.tabs.update(tab.id, { url })
 	},
 	changeVideo(tab, data) {
 		console.log(tab.id, 'changeVideo', data)
@@ -99,8 +109,8 @@ let fbApi = {
 		db.collection('Room')
 			.add({
 				url: '',
-				playing: false,
-				playTime: {
+				video: {
+					playing: false,
 					currentTime: 0,
 					startAt: 0
 				}
@@ -127,11 +137,15 @@ let fbApi = {
 				callback(doc.data())
 			})
 	},
+	onSnapshotPrev: {},
 	onSnapshot(state, callback) {
 		db.collection('Room')
 			.doc(state.roomId)
 			.onSnapshot(doc => {
-				callback(doc.data())
+				let currData = doc.data()
+				let prevData = this.onSnapshotPrev[state.roomId]
+				callback(currData, prevData)
+				this.onSnapshotPrev[state.roomId] = currData
 			})
 	}
 }

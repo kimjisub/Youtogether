@@ -12,10 +12,8 @@ function sendPlay() {
 		chrome.runtime.sendMessage(extensionId, {
 			videoChanged: {
 				playing: true,
-				playTime: {
-					currentTime: videoView.currentTime,
-					startAt: time.getTime()
-				}
+				currentTime: videoView.currentTime,
+				startAt: time.getTime()
 			}
 		})
 	})
@@ -27,10 +25,8 @@ function sendPause() {
 		chrome.runtime.sendMessage(extensionId, {
 			videoChanged: {
 				playing: false,
-				playTime: {
-					currentTime: videoView.currentTime,
-					startAt: time.getTime()
-				}
+				currentTime: videoView.currentTime,
+				startAt: 0
 			}
 		})
 	})
@@ -66,15 +62,17 @@ window.addEventListener('message', event => {
 		let changeVideo = event.data.changeVideo
 		console.log(changeVideo)
 		if (changeVideo) {
-			if (changeVideo.url != document.location.href) document.location.href = changeVideo.url
 			if (videoView) {
-				if (changeVideo.playing) videoView.play()
-				else videoView.pause()
-
-				srvTime(time => {
-					let delayTime = (time.getTime() - changeVideo.playTime.startAt) / 1000
-					videoView.currentTime = delayTime + changeVideo.playTime.currentTime
-				})
+				if (changeVideo.playing) {
+					srvTime(time => {
+						let delayTime = (time.getTime() - changeVideo.startAt) / 1000
+						videoView.currentTime = delayTime + changeVideo.currentTime
+					})
+					videoView.play()
+				} else {
+					videoView.currentTime = changeVideo.currentTime
+					videoView.pause()
+				}
 			}
 		}
 	}
