@@ -68,7 +68,9 @@ let ytApi = {
 	scriptLoaded(tab) {
 		console.log(tab.id, 'scriptLoaded')
 		fbApi.get(ytState[tab.id], data => {
-			if (!ytState[tab.id].host) ytApi.changeWithData(tab, data, null)
+			if (!ytState[tab.id].host) {
+				ytApi.changeVideo(tab, data.video)
+			}
 		})
 	},
 	urlChanged(tab, url, callback) {
@@ -86,10 +88,11 @@ let ytApi = {
 	},
 	changeWithData(tab, curr, prev) {
 		console.log(tab.id, 'changeWithData', curr, prev)
-		if (prev == null || curr.url != prev.url) ytApi.changeUrl(tab, curr.url)
-		if (prev == null || JSON.stringify(curr.video) != JSON.stringify(prev.video)) ytApi.changeVideo(tab, curr.video)
+		if (prev == undefined || curr.url != prev.url) ytApi.changeUrl(tab, curr.url)
+		if (prev == undefined || JSON.stringify(curr.video) != JSON.stringify(prev.video)) ytApi.changeVideo(tab, curr.video)
 	},
 	changeUrl(tab, url) {
+		console.log(tab.id, 'changeUrl', url)
 		chrome.tabs.update(tab.id, { url })
 	},
 	changeVideo(tab, data) {
