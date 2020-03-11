@@ -4,6 +4,7 @@ let timeOffset = 0
 function init() {
 	srvTime((serverTime, timeOffset_) => {
 		timeOffset = timeOffset_
+		console.log('timeOffset', timeOffset)
 		chrome.runtime.sendMessage(extensionId, {
 			scriptLoaded: true
 		})
