@@ -16,5 +16,5 @@
   "background": {
     "page": "background.html"
   },
-  "content_security_policy": "script-src 'self' 'unsafe-eval' https://www.gstatic.com https://unpkg.com 'sha256-NdF6luvUZMQNvBpR4l3b7feFlAa949czaMnrgfbSXW4='; object-src 'self'"
+  "content_security_policy": "script-src 'self' 'unsafe-eval' https://www.gstatic.com 'sha256-NdF6luvUZMQNvBpR4l3b7feFlAa949czaMnrgfbSXW4='; object-src 'self'"
 }
