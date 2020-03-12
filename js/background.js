@@ -20,10 +20,11 @@ let ytApi = {
 		ytState[tab.id] = {
 			host,
 			mode: 0,
-			roomId: roomId
+			roomId: roomId,
+			detatchFirestore: null
 		}
 
-		fbApi.onSnapshot(ytState[tab.id], (curr, prev) => {
+		ytState[tab.id].detatchFirestore = fbApi.onSnapshot(ytState[tab.id], (curr, prev) => {
 			if (!host) {
 				ytApi.changeWithData(tab, curr, prev)
 			}
@@ -43,7 +44,10 @@ let ytApi = {
 	},
 	remove(tab) {
 		console.log(tab.id, 'remove')
-		if (ytState[tab.id]) delete ytState[tab.id]
+		if (ytState[tab.id]) {
+			if (ytState[tab.id].detatchFirestore) ytState[tab.id].detatchFirestore()
+			delete ytState[tab.id]
+		}
 	},
 	loadScript(tab, callback) {
 		console.log(tab.id, 'loadScript')
@@ -133,16 +137,19 @@ let fbApi = {
 				.update(data)
 	},
 	get(state, callback) {
-		db.collection('Room')
-			.doc(state.roomId)
-			.get()
-			.then(doc => {
-				callback(doc.data())
-			})
+		if (state)
+			db.collection('Room')
+				.doc(state.roomId)
+				.get()
+				.then(doc => {
+					callback(doc.data())
+				})
+		else callback(doc.data())
 	},
 	onSnapshotPrev: {},
 	onSnapshot(state, callback) {
-		db.collection('Room')
+		return db
+			.collection('Room')
 			.doc(state.roomId)
 			.onSnapshot(doc => {
 				let currData = doc.data()

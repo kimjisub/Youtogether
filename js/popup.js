@@ -14,7 +14,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
 		})
 	}
 	document.getElementById('joinRoom').onclick = () => {
-		let roomId = document.getElementById('roomIdInput').value
+		let roomId = document.getElementById('roomIdInput').value.replace('#', '')
 		ytApi.join(tab, roomId, () => {
 			updateUI()
 		})
@@ -22,6 +22,10 @@ chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
 	document.getElementById('copyRoomId').onclick = () => {
 		let roomId = document.getElementById('roomId').innerHTML
 		copyToClipboard('#' + roomId)
+	}
+	document.getElementById('exitRoom').onclick = () => {
+		ytApi.remove(tab)
+		updateUI()
 	}
 })
 
