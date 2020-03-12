@@ -19,18 +19,31 @@ chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
 			updateUI()
 		})
 	}
+	document.getElementById('copyRoomId').onclick = () => {
+		let roomId = document.getElementById('roomId').innerHTML
+		copyToClipboard('#' + roomId)
+	}
 })
 
 function updateUI() {
 	let state = ytApi.get(tab)
 	if (state) {
-		document.getElementById('start').classList.add('hidden')
-		document.getElementById('room').classList.remove('hidden')
+		document.getElementById('startPage').classList.add('hidden')
+		document.getElementById('roomPage').classList.remove('hidden')
 		console.log('state', state)
 		document.getElementById('roomId').innerText = state.roomId
 		document.getElementById('host').innerText = state.host
 	} else {
-		document.getElementById('start').classList.remove('hidden')
-		document.getElementById('room').classList.add('hidden')
+		document.getElementById('startPage').classList.remove('hidden')
+		document.getElementById('roomPage').classList.add('hidden')
 	}
+}
+
+function copyToClipboard(val) {
+	var t = document.createElement('textarea')
+	document.body.appendChild(t)
+	t.value = val
+	t.select()
+	document.execCommand('copy')
+	document.body.removeChild(t)
 }

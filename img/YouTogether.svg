@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="283px" height="60px" viewBox="0 0 283 60" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 63.1 (92452) - https://sketch.com -->
+    <title>Artboard</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <text id="YouTogether" stroke="#282828" stroke-width="1.5" font-family="PathwayGothicOne-Regular, Pathway Gothic One" font-size="53" font-weight="normal" letter-spacing="-0.3" fill="#282828">
+            <tspan x="77" y="48">YouTogether</tspan>
+        </text>
+        <g id="Group" transform="translate(8.000000, 8.000000)" fill-rule="nonzero">
+            <path d="M62,6.87 C61.28,4.17 59.15,2.04 56.44,1.31 C51.54,0 31.88,0 31.88,0 C31.88,0 12.23,0 7.32,1.31 C4.62,2.03 2.49,4.16 1.76,6.87 C0.45,11.77 0.45,22 0.45,22 C0.45,22 0.45,32.23 1.76,37.13 C2.48,39.83 4.61,41.96 7.32,42.69 C12.23,44 31.88,44 31.88,44 C31.88,44 51.54,44 56.44,42.69 C59.14,41.97 61.27,39.84 62,37.13 C63.31,32.23 63.31,22 63.31,22 C63.31,22 63.31,11.77 62,6.87 Z" id="Path" fill="#FF0000"></path>
+            <polygon id="Path" fill="#FFFFFF" points="25.6 31.43 41.93 22 25.6 12.57"></polygon>
+        </g>
+    </g>
+</svg>

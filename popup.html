@@ -5,31 +5,35 @@
   <meta charset="utf-8" />
   <title>React App</title>
   <link href="css/popup.css" rel="stylesheet">
-  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-    crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-    crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="//unpkg.com/bootstrap@4/dist/css/bootstrap.min.css">
+  <script src='//unpkg.com/jquery@3/dist/jquery.min.js'></script>
+  <script src='//unpkg.com/popper.js@1/dist/umd/popper.min.js'></script>
+  <script src='//unpkg.com/bootstrap@4/dist/js/bootstrap.min.js'></script>
 </head>
 
 <body>
-  <div id="root">
-    <div id="start" class="hidden">
-      <button type="button" id="createRoom" class="btn btn-primary">방 만들기</button>
-      <input id="roomIdInput"></input>
-      <button type="button" id="joinRoom" class="btn btn-primary">방 참가</button>
-    </div>
-    <div id="room" class="hidden">
-      <p id="roomId"></p>
-      <p id="host"></p>
-      방 참가됨
-    </div>
+  <div id="root" class="no-drag">
+    <img src="img/YouTogether.svg" id="logo" />
 
+    <div id="content">
+      <div id="startPage" class="hidden">
+        <div>
+          <button type="button" id="createRoom" class="btn btn-success">방 만들기</button>
+        </div>
+        <hr />
+        <div>
+          <input id="roomIdInput"></input>
+          <button type="button" id="joinRoom" class="btn btn-success">방 참가</button>
+        </div>
+      </div>
+      <div id="roomPage" class="">
+        <p id="copyRoomId">#<span id="roomId">39vn20dkf20d</span></p>
+        <p>Host: <span id="host">false</span></p>
+        <button type="button" id="joinRoom" class="btn btn-success">방 나가기</button>
+      </div>
+    </div>
   </div>
+
   <script src="js/popup.js"></script>
 </body>
 
