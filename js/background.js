@@ -79,7 +79,7 @@ let ytApi = {
 	},
 	urlChanged(tab, url, callback) {
 		console.log(tab.id, 'urlChanged', url)
-		if (url.includes('youtube.com/watch')) {
+		if (url.includes('youtube.com')) {
 			fbApi.update(ytState[tab.id], {
 				url
 			})
