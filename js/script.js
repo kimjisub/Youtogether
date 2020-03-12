@@ -2,6 +2,7 @@
 
 let timeOffset = 0
 function init() {
+	if (document.getElementById('toggle').attributes['aria-pressed'].value == 'true') document.getElementById('toggle').click()
 	srvTime((serverTime, timeOffset_) => {
 		timeOffset = timeOffset_
 		console.log('timeOffset', timeOffset)

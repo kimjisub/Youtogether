@@ -79,12 +79,14 @@ let ytApi = {
 	},
 	urlChanged(tab, url, callback) {
 		console.log(tab.id, 'urlChanged', url)
-		fbApi.update(ytState[tab.id], {
-			url
-		})
-		ytApi.loadScript(tab, () => {
-			callback()
-		})
+		if (url.includes('youtube.com/watch')) {
+			fbApi.update(ytState[tab.id], {
+				url
+			})
+			ytApi.loadScript(tab, () => {
+				callback()
+			})
+		}
 	},
 	videoChanged(tab, changed) {
 		console.log(tab.id, 'videoChanged', changed)
