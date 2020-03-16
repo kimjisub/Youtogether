@@ -18,7 +18,6 @@ function init() {
 	})
 }
 
-videoView = null
 onPlayed = () => {
 	played()
 }
@@ -31,7 +30,7 @@ onMessage = event => {
 }
 function main() {
 	if (document.location.href.includes('youtube.com')) {
-		videoView = document.querySelector('.html5-main-video')
+		let videoView = getVideoView()
 		if (videoView) {
 			videoView.addEventListener('play', onPlayed)
 			videoView.addEventListener('pause', onPaused)
@@ -47,17 +46,19 @@ function main() {
 function changeVideo(data) {
 	console.log('changeVideo', data)
 	if (data) {
+		let videoView = getVideoView()
 		if (videoView) {
 			if (data.playing) {
 				let delayTime = (new Date().getTime() + timeOffset - data.startAt) / 1000
-				play(data, delayTime + data.currentTime)
-			} else pause(data, data.currentTime)
+				play(delayTime + data.currentTime)
+			} else pause(data.currentTime)
 		}
 	}
 }
 
 function detatch() {
 	console.log('detatch')
+	let videoView = getVideoView()
 	videoView.removeEventListener('play', onPlayed)
 	videoView.removeEventListener('pause', onPaused)
 	window.removeEventListener('message', onMessage)
@@ -68,6 +69,7 @@ function disableAutoPlay() {
 }
 
 function played() {
+	let videoView = getVideoView()
 	console.log('Video Played', videoView.currentTime)
 	chrome.runtime.sendMessage(extensionId, {
 		videoChanged: {
@@ -79,6 +81,7 @@ function played() {
 }
 
 function paused() {
+	let videoView = getVideoView()
 	console.log('Video Paused', videoView.currentTime)
 	chrome.runtime.sendMessage(extensionId, {
 		videoChanged: {
@@ -90,15 +93,21 @@ function paused() {
 }
 
 function play(currentTime) {
+	let videoView = getVideoView()
 	console.log('Play Video', currentTime)
 	videoView.currentTime = currentTime
 	videoView.play()
 }
 
 function pause(currentTime) {
+	let videoView = getVideoView()
 	console.log('Pause Video', currentTime)
 	videoView.currentTime = currentTime
 	videoView.pause()
+}
+
+function getVideoView() {
+	return document.querySelector('.html5-main-video')
 }
 
 var xmlHttp
