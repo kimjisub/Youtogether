@@ -45,6 +45,7 @@ let ytApi = {
 	remove(tab) {
 		console.log(tab.id, 'remove')
 		if (ytState[tab.id]) {
+			ytApi.sendMessage(tab, { detatch: true })
 			if (ytState[tab.id].detatchFirestore) ytState[tab.id].detatchFirestore()
 			delete ytState[tab.id]
 		}
@@ -54,7 +55,7 @@ let ytApi = {
 		chrome.tabs.executeScript(
 			tab.id,
 			{
-				code: `console.log('Script Loaded');let extensionId = '${chrome.runtime.id}'`
+				code: `extensionId = '${chrome.runtime.id}'`
 			},
 			() => {
 				chrome.tabs.executeScript(
@@ -78,19 +79,23 @@ let ytApi = {
 		})
 	},
 	urlChanged(tab, url, callback) {
-		console.log(tab.id, 'urlChanged', url)
-		if (url.includes('youtube.com')) {
-			fbApi.update(ytState[tab.id], {
-				url
-			})
-			ytApi.loadScript(tab, () => {
-				callback()
-			})
+		if (ytState[tab.id].host) {
+			console.log(tab.id, 'urlChanged', url)
+			if (url.includes('youtube.com')) {
+				fbApi.update(ytState[tab.id], {
+					url
+				})
+				ytApi.loadScript(tab, () => {
+					callback()
+				})
+			}
 		}
 	},
 	videoChanged(tab, changed) {
-		console.log(tab.id, 'videoChanged', changed)
-		if (ytState[tab.id]) fbApi.update(ytState[tab.id], { video: changed })
+		if (ytState[tab.id].host) {
+			console.log(tab.id, 'videoChanged', changed)
+			if (ytState[tab.id]) fbApi.update(ytState[tab.id], { video: changed })
+		}
 	},
 	changeWithData(tab, curr, prev) {
 		console.log(tab.id, 'changeWithData', curr, prev)
@@ -103,18 +108,21 @@ let ytApi = {
 	},
 	changeVideo(tab, data) {
 		console.log(tab.id, 'changeVideo', data)
-		chrome.tabs.executeScript(tab.id, {
-			code: `window.postMessage(${JSON.stringify({ changeVideo: data })}, '*')`
-		})
+		ytApi.sendMessage(tab, { changeVideo: data })
 		//window.postMessage({ changeVideo: data }, '*')
 		//chrome.tabs.sendMessage(tab.id, { changeVideo: data })
+	},
+	sendMessage(tab, data) {
+		chrome.tabs.executeScript(tab.id, {
+			code: `window.postMessage(${JSON.stringify(data)}, '*')`
+		})
 	}
 }
 
 let fbApi = {
 	//createRoom((roomId) => {})
 	create(callback) {
-		console.log('FireStore', 'create')
+		//console.log('FireStore', 'create')
 		db.collection('Room')
 			.add({
 				url: '',
@@ -132,11 +140,10 @@ let fbApi = {
 			})
 	},
 	update(state, data) {
-		console.log('FireStore', 'update', state.roomId, data)
-		if (state.host)
-			db.collection('Room')
-				.doc(state.roomId)
-				.update(data)
+		//console.log('FireStore', 'update', state.roomId, data)
+		db.collection('Room')
+			.doc(state.roomId)
+			.update(data)
 	},
 	get(state, callback) {
 		if (state)
