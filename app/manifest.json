@@ -7,9 +7,9 @@
 		"default_popup": "popup.html",
 		"default_title": "Youtogether"
 	},
-	"permissions": ["activeTab", "tabs", "http://*/", "https://*/"],
+	"permissions": ["activeTab", "tabs", "https://www.youtube.com/*"],
 	"background": {
 		"page": "background.html"
 	},
-	"content_security_policy": "script-src 'self' 'unsafe-eval' https://www.gstatic.com 'sha256-NdF6luvUZMQNvBpR4l3b7feFlAa949czaMnrgfbSXW4='; object-src 'self'"
+	"content_security_policy": "script-src 'self' https://www.gstatic.com ; object-src 'self'"
 }
